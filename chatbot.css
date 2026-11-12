@@ -1,0 +1,315 @@
+/**
+ * FoodFusion — Fusion Assistant (floating chat UI)
+ * Minimalist launcher + compact card; no dependency on other stylesheets (uses fallbacks).
+ */
+
+/* Reuse FoodFusion skip-link pattern if .visually-hidden missing */
+.fusion-chat .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fusion-chat {
+  /* Inherit site font when loaded after main CSS */
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--ff-deep, #06261d);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Launcher — quiet circle, bottom-right                                         */
+/* -------------------------------------------------------------------------- */
+
+.fusion-chat__launcher {
+  position: fixed;
+  z-index: 3200;
+  bottom: calc(1.15rem + env(safe-area-inset-bottom, 0px));
+  right: calc(1.15rem + env(safe-area-inset-right, 0px));
+  width: 3.25rem;
+  height: 3.25rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--ff-deep, #06261d);
+  color: var(--ff-lime, #c4e538);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 14px rgba(6, 38, 29, 0.22), 0 1px 3px rgba(6, 38, 29, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.fusion-chat__launcher:hover {
+  transform: scale(1.04);
+  box-shadow: 0 5px 20px rgba(6, 38, 29, 0.28);
+}
+
+.fusion-chat__launcher:focus-visible {
+  outline: 2px solid var(--ff-lime, #c4e538);
+  outline-offset: 3px;
+}
+
+.fusion-chat[data-open="true"] .fusion-chat__launcher {
+  background: var(--ff-green, #14523c);
+  color: var(--ff-cream, #f4f1de);
+}
+
+.fusion-chat__launcher-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  display: block;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Window — slides up + fades from bottom-right                                */
+/* -------------------------------------------------------------------------- */
+
+.fusion-chat__window {
+  position: fixed;
+  z-index: 3199;
+  bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  right: calc(1rem + env(safe-area-inset-right, 0px));
+  width: min(100%, 350px);
+  max-width: calc(100vw - 2rem);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.98);
+  transform-origin: bottom right;
+  transition:
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.3s step-end;
+}
+
+.fusion-chat[data-open="true"] .fusion-chat__window {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s step-start;
+}
+
+.fusion-chat__card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(6, 38, 29, 0.08);
+  box-shadow: 0 10px 40px rgba(6, 38, 29, 0.12), 0 2px 10px rgba(6, 38, 29, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: min(420px, 58vh);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header                                                                       */
+/* -------------------------------------------------------------------------- */
+
+.fusion-chat__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.85rem;
+  border-bottom: 1px solid rgba(6, 38, 29, 0.06);
+  background: rgba(244, 241, 222, 0.35);
+}
+
+.fusion-chat__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-family: inherit;
+}
+
+.fusion-chat__close {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  opacity: 0.75;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.fusion-chat__close:hover {
+  opacity: 1;
+  background: rgba(6, 38, 29, 0.06);
+}
+
+.fusion-chat__close:focus-visible {
+  outline: 2px solid var(--ff-green, #14523c);
+  outline-offset: 2px;
+}
+
+.fusion-chat__close-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: block;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Messages                                                                     */
+/* -------------------------------------------------------------------------- */
+
+.fusion-chat__messages {
+  flex: 1;
+  min-height: 8rem;
+  max-height: 14rem;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fusion-chat__msg {
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  max-width: 92%;
+  word-break: break-word;
+}
+
+.fusion-chat__msg--user {
+  align-self: flex-end;
+  background: rgba(20, 82, 60, 0.1);
+  color: var(--ff-deep, #06261d);
+}
+
+.fusion-chat__msg--note {
+  align-self: stretch;
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 0.8125rem;
+  color: rgba(6, 38, 29, 0.55);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Input row — minimal field + send icon                                       */
+/* -------------------------------------------------------------------------- */
+
+.fusion-chat__form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem 1rem;
+  border-top: 1px solid rgba(6, 38, 29, 0.06);
+  background: #fff;
+}
+
+.fusion-chat__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgba(6, 38, 29, 0.12);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 0.875rem;
+  background: rgba(244, 241, 222, 0.25);
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fusion-chat__input::placeholder {
+  color: rgba(6, 38, 29, 0.4);
+}
+
+.fusion-chat__input:focus {
+  outline: none;
+  border-color: rgba(20, 82, 60, 0.45);
+  box-shadow: 0 0 0 3px rgba(196, 229, 56, 0.25);
+}
+
+.fusion-chat__send {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 12px;
+  background: var(--ff-deep, #06261d);
+  color: var(--ff-lime, #c4e538);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, filter 0.15s ease;
+}
+
+.fusion-chat__send:hover {
+  filter: brightness(1.08);
+}
+
+.fusion-chat__send:active {
+  transform: scale(0.96);
+}
+
+.fusion-chat__send:focus-visible {
+  outline: 2px solid var(--ff-lime, #c4e538);
+  outline-offset: 2px;
+}
+
+.fusion-chat__send-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  display: block;
+  margin-left: 2px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile                                                                       */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  .fusion-chat__window {
+    left: 0.75rem;
+    right: 0.75rem;
+    width: auto;
+    max-width: none;
+    transform-origin: bottom center;
+  }
+
+  .fusion-chat__launcher {
+    right: calc(0.85rem + env(safe-area-inset-right, 0px));
+    bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .fusion-chat__card {
+    max-height: min(480px, 65vh);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fusion-chat__window,
+  .fusion-chat__launcher {
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contact drawer demo</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header">
+      <p class="site-header__brand">Demo Site</p>
+      <button type="button" class="btn-contact" id="contact-open" aria-haspopup="dialog" aria-controls="contact-drawer">
+        Contact
+      </button>
+    </header>
+
+    <main id="main" class="main">
+      <h1>Page content</h1>
+      <p>
+        This area stays visible when the drawer opens. A dark backdrop dims the page and focus moves to the contact
+        panel.
+      </p>
+    </main>
+
+    <!-- Backdrop: sits under the drawer; click target closes the panel -->
+    <div class="contact-backdrop" id="contact-backdrop" aria-hidden="true"></div>
+
+    <!-- Drawer: fixed to the viewport; slides in from the right when .is-open is toggled -->
+    <aside
+      class="contact-drawer"
+      id="contact-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="drawer-heading"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <div class="contact-drawer__inner">
+        <div class="contact-drawer__head">
+          <h2 id="drawer-heading" class="contact-drawer__title">Get in touch</h2>
+          <button type="button" class="contact-drawer__close" id="contact-close" aria-label="Close contact form">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <form class="contact-form" id="contact-form" action="#" method="post" novalidate>
+          <div class="contact-form__field">
+            <label for="contact-name">Name</label>
+            <input type="text" id="contact-name" name="name" autocomplete="name" required />
+          </div>
+          <div class="contact-form__field">
+            <label for="contact-email">Email</label>
+            <input type="email" id="contact-email" name="email" autocomplete="email" required />
+          </div>
+          <div class="contact-form__field">
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" name="message" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="contact-form__submit">Submit</button>
+        </form>
+      </div>
+    </aside>
+  </body>
+</html>
